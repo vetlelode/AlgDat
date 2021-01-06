@@ -1,11 +1,13 @@
 public class Plane implements Comparable<Plane> {
     private int tickID;
+    private int uniqeID;
     private int startFuel;
     private int remainingFuel;
     private int waitTime;
 
-    public Plane(int i ,int remainingFuel){
+    public Plane(int i ,int j,int remainingFuel){
         this.tickID = i;
+        this.uniqeID = j;
         this.startFuel = remainingFuel;
         this.remainingFuel = remainingFuel;
     }
@@ -64,10 +66,6 @@ public class Plane implements Comparable<Plane> {
 
     @Override
     public String toString() {
-        return "Plane{" +
-                "tickID=" + tickID +
-                ", startFuel=" + startFuel +
-                ", remainingFuel=" + remainingFuel +
-                '}';
+        return "Plane " + uniqeID;
     }
 }
