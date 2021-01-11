@@ -4,6 +4,8 @@ import java.util.*;
  * @author  Vetle Mæland Lode
  */
 
+
+
 public class Main {
     public static void main(String[] args) {
         //Que for planes waiting to land
@@ -24,6 +26,10 @@ public class Main {
         Scanner userParamReader = new Scanner(System.in);
         //Define the simulations runway
         Runway runway = new Runway();
+        //Count the total amount of rejected planes
+        int rejectedCount = 0;
+        //Count the idle time of the runway
+        int idleTime = 0;
 
         System.out.println("How many iterations do you want the simulation to run for ?");
         //Define a "roof" for how long the simulation can keep adding planes, after it reaches this cap it stops adding new planes
@@ -32,7 +38,7 @@ public class Main {
             simulationCap = userParamReader.nextInt();
 
         //Take the given input as the mean arrival rate.
-        System.out.println("What do you want the mean arrival rate to be ? (Must be between 0 and 1)");
+        System.out.println("What do you want the mean arrival rate to be ? (Should be between 0 and 1)");
         double meanArrival = 0.5;
         if(userParamReader.hasNextFloat())
             meanArrival = userParamReader.nextDouble();
@@ -40,7 +46,7 @@ public class Main {
         //Scanner for reading user input
         Scanner userParamReaderTakeOff = new Scanner(System.in);
         //Take the given input as the mean arrival rate.
-        System.out.println("What do you want the mean departure rate to be ? (Must be between 0 and 1)");
+        System.out.println("What do you want the mean departure rate to be ? (Should be between 0 and 1)");
         double meanDeparture = 0.5;
         if(userParamReaderTakeOff.hasNextFloat())
             meanDeparture = userParamReaderTakeOff.nextDouble();
@@ -50,15 +56,27 @@ public class Main {
             simulationIteration++;
             //Define the runaway as clear at the start of one time unit
             runway.setTaken(false);
-            //Add the planes from the random Poisson distribution.
+
+            //Add the planes from the random Poisson distribution, of the mean set by the user
             for(int j = 0; j < getPoissonRandom(meanArrival); j++){
-                uniqueID++;
-                arrivalQue.add(new Plane(simulationIteration, uniqueID, startFuel));
+                if(arrivalQue.size() < startFuel) {
+                    //Only add to the arrival que if the que is small enough that the arriving plane can land.
+                    uniqueID++;
+                    arrivalQue.add(new Plane(simulationIteration, uniqueID, startFuel));
+                }else{
+                    rejectedCount++;
+                }
             }
+
             //Add planes to the departure que based on the rate set by the user
             for(int j = 0; j < getPoissonRandom(meanDeparture); j++) {
-                uniqueID++;
-                takeoffQue.add(new Plane(simulationIteration, uniqueID, startFuel));
+                if(takeoffQue.size() < startFuel) {
+                    //Reject the plane if the takeoff queue is larger than the start fuel variable
+                    uniqueID++;
+                    takeoffQue.add(new Plane(simulationIteration, uniqueID, startFuel));
+                }else{
+                    rejectedCount++;
+                }
             }
 
             //Land the first plane if available
@@ -80,20 +98,37 @@ public class Main {
             }
 
             //Print a message if the runway is idle
-            if(!runway.isTaken())
-                System.out.println("The runaway is unused " +runwayStatus(arrivalQue,takeoffQue));
+            if(!runway.isTaken()) {
+                idleTime++;
+                System.out.println("The runaway is unused " + runwayStatus(arrivalQue, takeoffQue));
+            }
 
-            //Subtract and add one unit of fuel from airborne planes on each tick
+            //Subtract one unit of fuel from airborne planes on each tick
             for(Plane plane : arrivalQue){
                 plane.detractRemainingFuel();
-                //Write out an error if a plane crashes
+                //Write out an error if a plane crashes, and break the loop as something is wrong
                 if(plane.getRemainingFuel() == 0){
-                    System.out.println(plane + " Go boom");
+                    System.err.println(plane + " Has crashed!");
+                    break;
                 }
             }
         }
+        //Calculate the average wait time for an arriving plane
+        double avgTakeoffWait = 0;
+        for(Plane plane : arrivalHistory){
+            avgTakeoffWait += startFuel - plane.getRemainingFuel();
+        }
+        avgTakeoffWait = avgTakeoffWait/arrivalHistory.size();
+
+        //After the simulation loop is finished, print out a summary.
         System.out.println("\nSimulation finished.");
-        System.out.println(arrivalHistory.size()+" Planes landed; " + takeoffHistory.size() +" Planes departed over " + simulationCap + " time units");
+        System.out.println("Simulation ran for " + simulationIteration + " time units");
+        System.out.println(arrivalHistory.size()+" Planes landed");
+        System.out.println(takeoffHistory.size() +" Planes departed");
+        System.out.println(takeoffQue.size() + " Planes did not get to takeoff");
+        System.out.println(rejectedCount + " Planes were rejected");
+        System.out.println(idleTime + " Time units the runway was idle");
+        System.out.println(avgTakeoffWait+ " time units was the average arrival wait time");
     }
 
     private static int getPoissonRandom(double mean) {
@@ -108,6 +143,7 @@ public class Main {
         } while (p > L);
         return k - 1;
     }
+
     private static String runwayStatus(Queue<Plane> arrivalQue, Queue<Plane> takeoffQue){
         return "("+arrivalQue.size() + " Plane(s) waiting to land, " + takeoffQue.size() +" Plane(s) waiting to takeoff)";
     }
