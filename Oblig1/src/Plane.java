@@ -53,14 +53,18 @@ public class Plane implements Comparable<Plane> {
         return waitTime;
     }
 
+    public int getUniqeID() {
+        return uniqeID;
+    }
+
     @Override
     public int compareTo(Plane plane) {
-        if (this.tickID == plane.getTickID()) {
+        if (this.uniqeID == plane.getUniqeID()) {
             return 0;
-        } else if (this.tickID < plane.getTickID()) {
-            return 1;
-        } else {
+        } else if (this.uniqeID < plane.getUniqeID()) {
             return -1;
+        } else {
+            return 1;
         }
     }
 

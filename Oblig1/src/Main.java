@@ -2,22 +2,39 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 
+/**
+ * @author  Vetle Mæland Lode
+ */
+
 public class Main {
     public static void main(String[] args) {
+        //Define two separate Que's one for planes landing and another for planes taking off
         Queue<Plane> arrivalQue = new PriorityQueue<Plane>();
         Queue<Plane> takeoffQue = new PriorityQueue<Plane>();
+        //Define the unique ID ticker that will be used for all of the planes
         int arrivalID = 0;
+        //Define a "roof" for how long the simulation can keep adding planes, after it reaches this cap it stops adding new planes
+        int simulationCap = 100;
+        //Defines the current "Tick" of the simulation
+        int simulationIteration = 0;
         Runway runway = new Runway();
-        for(int i = 0; i <= 5 + arrivalQue.size() + takeoffQue.size(); i++){
-            //Define the runaway as clear
+        //Loop that represents the operation of the airport.
+        while(simulationIteration < simulationCap + takeoffQue.size()){
+            simulationIteration++;
+            //Define the runaway as clear at the start of one time unit
             runway.setTaken(false);
-
+            //Add the planes from the random Poisson distribution.
             for(int j = 0; j < getPoissonRandom(0.8); j++){
-                arrivalID++;
-                arrivalQue.add(new Plane(i,arrivalID,3));
+                //Only add planes if the simulation cap is not reached
+                if(simulationIteration < simulationCap) {
+                    arrivalID++;
+                    arrivalQue.add(new Plane(simulationIteration, arrivalID, 3));
+                }else{
+                    System.out.println("Simulation cap reached, therefore new planes can not be added");
+                }
             }
 
-            //Land a plane if available
+            //Land the first plane if available
             if(arrivalQue.size() >= 1){
                 if(arrivalQue.peek().getRemainingFuel() <= 5) {
                     runway.setTaken(true);
@@ -48,6 +65,7 @@ public class Main {
             for(Plane plane : takeoffQue){
                 plane.addRemainingFuel();
             }
+
         }
     }
 
