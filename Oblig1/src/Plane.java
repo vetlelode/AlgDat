@@ -6,7 +6,7 @@ public class Plane implements Comparable<Plane> {
     private int waitTime;
 
     public Plane(int i ,int j,int remainingFuel){
-        this.tickID = i;
+
         this.uniqeID = j;
         this.startFuel = remainingFuel;
         this.remainingFuel = remainingFuel;
@@ -59,13 +59,7 @@ public class Plane implements Comparable<Plane> {
 
     @Override
     public int compareTo(Plane plane) {
-        if (this.uniqeID == plane.getUniqeID()) {
-            return 0;
-        } else if (this.uniqeID < plane.getUniqeID()) {
-            return -1;
-        } else {
-            return 1;
-        }
+        return Integer.compare(this.uniqeID, plane.getUniqeID());
     }
 
     @Override

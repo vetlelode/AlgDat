@@ -1,6 +1,7 @@
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * @author  Vetle Mæland Lode
@@ -9,29 +10,48 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         //Define two separate Que's one for planes landing and another for planes taking off
-        Queue<Plane> arrivalQue = new PriorityQueue<Plane>();
-        Queue<Plane> takeoffQue = new PriorityQueue<Plane>();
+        Queue<Plane> arrivalQue = new PriorityQueue<>();
+        Queue<Plane> takeoffQue = new PriorityQueue<>();
         //Define the unique ID ticker that will be used for all of the planes
-        int arrivalID = 0;
-        //Define a "roof" for how long the simulation can keep adding planes, after it reaches this cap it stops adding new planes
-        int simulationCap = 100;
+        int uniqeID = 0;
         //Defines the current "Tick" of the simulation
         int simulationIteration = 0;
+        //Scanner for reading user input
+        Scanner userParamReader = new Scanner(System.in);
+
+        System.out.println("How many iterations do you want the simulation to run for ?");
+        //Define a "roof" for how long the simulation can keep adding planes, after it reaches this cap it stops adding new planes
+        int simulationCap = 0;
+        if(userParamReader.hasNextInt())
+            simulationCap = userParamReader.nextInt();
+
         Runway runway = new Runway();
+        //Take the given input as the mean arrival rate.
+        System.out.println("What do you want the mean arrival rate to be ? (Must be between 0 and 1)");
+        double meanArrival = 0.5;
+        if (userParamReader.hasNextDouble())
+            meanArrival = userParamReader.nextDouble();
+
+        //Take the given input as the mean arrival rate.
+        System.out.println("What do you want the mean departure rate to be ? (Must be between 0 and 1)");
+        double meanDeparture = 0.5;
+        if (userParamReader.hasNextDouble())
+            meanDeparture = userParamReader.nextDouble();
+
         //Loop that represents the operation of the airport.
-        while(simulationIteration < simulationCap + takeoffQue.size()){
+        while(simulationIteration < simulationCap){
             simulationIteration++;
             //Define the runaway as clear at the start of one time unit
             runway.setTaken(false);
             //Add the planes from the random Poisson distribution.
-            for(int j = 0; j < getPoissonRandom(0.8); j++){
-                //Only add planes if the simulation cap is not reached
-                if(simulationIteration < simulationCap) {
-                    arrivalID++;
-                    arrivalQue.add(new Plane(simulationIteration, arrivalID, 3));
-                }else{
-                    System.out.println("Simulation cap reached, therefore new planes can not be added");
-                }
+            for(int j = 0; j < getPoissonRandom(meanArrival); j++){
+                uniqeID++;
+                arrivalQue.add(new Plane(simulationIteration, uniqeID, 3));
+            }
+            //Add planes to the departure que based on the rate set by the user
+            for(int j = 0; j < getPoissonRandom(meanDeparture); j++) {
+                uniqeID++;
+                takeoffQue.add(new Plane(simulationIteration, uniqeID, 3));
             }
 
             //Land the first plane if available
@@ -40,8 +60,6 @@ public class Main {
                     runway.setTaken(true);
                     Plane plane = arrivalQue.poll();
                     System.out.println(plane+ " Is landing " +runwayStatus(arrivalQue,takeoffQue));
-                    takeoffQue.add(plane);
-                    plane.setRemainingFuel(3);
                 }
             }
             //A plane takes off if there is no landing plane
@@ -61,11 +79,6 @@ public class Main {
                     System.out.println(plane + " Go boom");
                 }
             }
-            //Add one fuel unit to each plane for each tick
-            for(Plane plane : takeoffQue){
-                plane.addRemainingFuel();
-            }
-
         }
     }
 
