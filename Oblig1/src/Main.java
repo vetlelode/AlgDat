@@ -113,12 +113,7 @@ public class Main {
                 }
             }
         }
-        //Calculate the average wait time for an arriving plane
-        double avgTakeoffWait = 0;
-        for(Plane plane : arrivalHistory){
-            avgTakeoffWait += startFuel - plane.getRemainingFuel();
-        }
-        avgTakeoffWait = avgTakeoffWait/arrivalHistory.size();
+
 
         //After the simulation loop is finished, print out a summary.
         System.out.println("\nSimulation finished.");
@@ -128,7 +123,7 @@ public class Main {
         System.out.println(takeoffQue.size() + " Planes did not get to takeoff");
         System.out.println(rejectedCount + " Planes were rejected");
         System.out.println(idleTime + " Time units the runway was idle");
-        System.out.println(avgTakeoffWait+ " time units was the average arrival wait time");
+        System.out.println(listAverage(arrivalHistory, startFuel)+ " time units was the average arrival wait time");
     }
 
     private static int getPoissonRandom(double mean) {
@@ -146,5 +141,14 @@ public class Main {
 
     private static String runwayStatus(Queue<Plane> arrivalQue, Queue<Plane> takeoffQue){
         return "("+arrivalQue.size() + " Plane(s) waiting to land, " + takeoffQue.size() +" Plane(s) waiting to takeoff)";
+    }
+
+    private static double listAverage(ArrayList<Plane> arrivalHistory, int startFuel){
+        //Calculate the average wait time for an arriving plane
+        double avgTakeoffWait = 0;
+        for(Plane plane : arrivalHistory){
+            avgTakeoffWait += startFuel - plane.getRemainingFuel();
+        }
+        return  avgTakeoffWait/arrivalHistory.size();
     }
 }
