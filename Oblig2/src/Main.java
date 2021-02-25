@@ -42,8 +42,9 @@ public class Main {
                 //Check that move won't put you outside the board
                 if (moveLegal(currentCord, possibleCord)) {
                     //Check that the coordinate is not taken
-                    if (brett[currentCord[0] + possibleCord[0]][currentCord[1] + possibleCord[1]] == 0)
+                    if (brett[currentCord[0] + possibleCord[0]][currentCord[1] + possibleCord[1]] == 0) {
                         currentlyPossible.add(possibleMove);
+                    }
                 }
             }
             if(currentlyPossible.size() == 0 ){
@@ -70,11 +71,42 @@ public class Main {
                 iter = moveBackTo+1;
                 continue;
             }
+            int newX = 0;
+            int newY = 0;
+            /* Code trying to implement the Warnsdorf rule, but it worked badly with my randomized backtracking, therefore i left it out of my final delivery
+            ArrayList<Integer> bestCands = new ArrayList<>();
+            int bestScore = 9;
+            for(Integer potMove: currentlyPossible){
+                int[] pot = new int[]{currentCord[0] +possibleMovesX[potMove], currentCord[1] +possibleMovesY[potMove]};
+                int futureMoves = 0;
+                for(int possibleMove = 0; possibleMove < 8; possibleMove++){
+                    int[] nextMove = new int[]{pot[0]+ possibleMovesX[possibleMove], pot[1] + possibleMovesY[possibleMove]};
+                    if(moveLegal(pot, nextMove)){
+                        if (brett[pot[0] + nextMove[0]][pot[1] + nextMove[1]] == 0){
+                            futureMoves++;
+                        }
+                    }
+                }
+                System.out.println("Move " + potMove + " has " + futureMoves+" potential moves.");
+                if(futureMoves <= bestScore && futureMoves >= 1){
+                    bestCands.add(potMove);
+                }
+            }
 
+            if(bestCands.size() > 0) {
+                Random rand = new Random();
+                int i = rand.nextInt(bestCands.size());
+                newX= currentCord[0] + possibleMovesX[bestCands.get(i)];
+                newY = currentCord[1] + possibleMovesY[bestCands.get(i)];
+            }else{
+                newX = currentCord[0] + possibleMovesX[currentlyPossible.get(0)];
+                newY = currentCord[1] + possibleMovesY[currentlyPossible.get(0)];
+            }
+            */
             Random rand = new Random();
             int i = rand.nextInt(currentlyPossible.size());
-            int newX = currentCord[0] + possibleMovesX[currentlyPossible.get(i)];
-            int newY = currentCord[1] + possibleMovesY[currentlyPossible.get(i)];
+            newX = currentCord[0] + possibleMovesX[currentlyPossible.get(i)];
+            newY = currentCord[1] + possibleMovesY[currentlyPossible.get(i)];
             System.out.println(iter+": Moving from [" + currentCord[0] + " " + currentCord[1]  + "] To ["
                     + newX + " "
                     + newY + "] "
