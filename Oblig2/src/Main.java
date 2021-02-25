@@ -1,26 +1,40 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
     public static int n = 5;
     public static void main(String [] args){
-        n = 5;
+        //Big sorry in advance to whoever has to correct this code.
+
+        // Unorthodox solution to oblig 2 using a lot of randomisation.
+        // Probably way slower than any proper algorithm,
+        // but can solve up to n=7 in a okeyish time frame.
+        // It also solved n=8 during testing, but this took a very long time :/
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("N? ");
+        n = scanner.nextInt();
+        System.out.println("Starting X?(starts at 0)");
+        int startingX = scanner.nextInt();
+        System.out.println("Starting Y?(starts at 0)");
+        int startingY = scanner.nextInt();
         int[][] brett = new int[n][n];
         for(int X = 0; X < n; X++){
             for(int Y = 0; Y < n; Y++){
                 brett[X][Y] = 0;
             }
         }
-        int[] currentCord = {0,0};
+        int[] currentCord = {startingX,startingY};
         brett[currentCord[0]][currentCord[1]] = -1;
         System.out.println(printBoard(brett));
 
-        ArrayList<Integer>possibleMovesHistory = new ArrayList<>();
-        ArrayList<Integer[]>coordHistory = new ArrayList<>();
-        coordHistory.add(new Integer[]{currentCord[0], currentCord[1]});
-        int[] completeResetCounter = new int[]{0, 0};
+
+        int stepBackCounter = 0;
+        int totalIterations = 0;
         //Keep running until solved
-        for(int iter = 0; iter < n*n; iter++){
+        int iter = 1;
+        while(iter < n*n){
             //Find the possible moves
             ArrayList<Integer> currentlyPossible = new ArrayList<>();
             for (int possibleMove = 0; possibleMove < 8; possibleMove++) {
@@ -33,53 +47,45 @@ public class Main {
                 }
             }
             if(currentlyPossible.size() == 0 ){
-                //Find the latest point where there was more than one possible move
-                for(int lastPossibleBacktrack = possibleMovesHistory.size(); lastPossibleBacktrack > 0; lastPossibleBacktrack-- ){
-                    System.out.print(iter-1+": There are no moves from [" + currentCord[0] + " " + currentCord[1]  + "] backtracking or resetting");
-                    System.out.println(printBoard(brett));
-
-                    int backIndex = lastPossibleBacktrack - 1;
-                    int earliestOption = possibleMovesHistory.get(backIndex);
-                    if(earliestOption > 1){
-                        currentCord[0] = coordHistory.get(backIndex)[0];
-                        currentCord[1] = coordHistory.get(backIndex)[1];
-                        possibleMovesHistory.subList(backIndex, possibleMovesHistory.size()).clear();
-                        coordHistory.subList(backIndex, coordHistory.size()).clear();
-                        iter = possibleMovesHistory.size();
-                        for(int X = 0; X < n; X++){
-                            for(int Y = 0; Y < n; Y++){
-                                if(brett[X][Y] > backIndex){
-                                    brett[X][Y] = 0;
-                                }
-                            }
+                System.out.println(printBoard(brett));
+                Random rand = new Random();
+                int moveBackTo = rand.nextInt(iter);
+                if(moveBackTo == 0)
+                    moveBackTo = 1;
+                stepBackCounter++;
+                for(int X = 0; X < n; X++){
+                    for(int Y = 0; Y < n; Y++){
+                        if(brett[X][Y] > moveBackTo){
+                            brett[X][Y] = 0;
                         }
-                        break;
+                        else if(brett[X][Y] == moveBackTo) {
+                            currentCord[0] = X;
+                            currentCord[1] = Y;
+                        }
+
                     }
-
                 }
-
+                totalIterations += iter;
+                System.out.println("Dumping back to "+moveBackTo + " " + currentCord[0] +" " + currentCord[1]);
+                iter = moveBackTo+1;
                 continue;
             }
-            possibleMovesHistory.add(currentlyPossible.size());
 
             Random rand = new Random();
             int i = rand.nextInt(currentlyPossible.size());
             int newX = currentCord[0] + possibleMovesX[currentlyPossible.get(i)];
             int newY = currentCord[1] + possibleMovesY[currentlyPossible.get(i)];
-            coordHistory.add(new Integer[]{newX,newY});
             System.out.println(iter+": Moving from [" + currentCord[0] + " " + currentCord[1]  + "] To ["
                     + newX + " "
                     + newY + "] "
                     + currentlyPossible.size() + " Currently possible moves");
             currentCord[0] = newX;
             currentCord[1] = newY;
-            if(!(iter == 0))
-                brett[currentCord[0]][currentCord[1]] = iter;
-            else
-                brett[currentCord[0]][currentCord[1]] = -2;
-
+            brett[currentCord[0]][currentCord[1]] = iter;
+            iter++;
         }
         System.out.println(printBoard(brett));
+        System.out.println("Solved with "+stepBackCounter + " attempts and " + totalIterations + " total operations");
     }
 
     public static boolean moveLegal(int[] current,int[] want){
@@ -94,7 +100,7 @@ public class Main {
     public static String printBoard(int[][]board){
         String boardText = "";
         for(int row = 0; row < board.length; row++){
-            boardText = boardText + "\n";
+            boardText += "\n";
             for(int cell = 0; cell < board[row].length; cell++){
                 if(board[row][cell] <= 9 && board[row][cell] >= 0 )
                     boardText += " [0" +board[row][cell] +"] ";
@@ -108,6 +114,6 @@ public class Main {
 
 
     public static int[] possibleMovesX = {2,2,-2,-2,1,1,-1,-1};
-    public static int[] possibleMovesY = {1,-1,1,-1,2,-2,2,2};
+    public static int[] possibleMovesY = {1,-1,1,-1,2,-2,2,-2};
 
 }
