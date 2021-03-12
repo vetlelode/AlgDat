@@ -5,12 +5,11 @@ import java.util.Scanner;
 public class Main {
     public static int n = 5;
     public static void main(String [] args){
-        //Big sorry in advance to whoever has to correct this code.
-
+        /*Big sorry in advance to whoever has to correct this code.
         // Unorthodox solution to oblig 2 using a lot of randomisation.
         // Probably way slower than any proper algorithm,
         // but can solve up to n=7 in a okeyish time frame.
-        // It also solved n=8 during testing, but this took a very long time :/
+         It also solved n=8 during testing, but this took a very long time :/*/
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("N? ");
