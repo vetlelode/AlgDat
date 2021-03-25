@@ -1,6 +1,5 @@
 public class Tree {
     private TreeNode root;
-    private int totalWords = 0;
     public Tree() {
         this.root = null;
     }
@@ -8,6 +7,7 @@ public class Tree {
     public void insert(String value){
         TreeNode treeNode = new TreeNode(value);
 
+        //If the root is empty place the node in the root
         if(this.root == null){
             root = treeNode;
             return;
