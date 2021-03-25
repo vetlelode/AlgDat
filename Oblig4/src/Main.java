@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args){
-
         /*
         I chose to read a input file instead of normal input as it allows more flexibility and testing with larger texts
         The file submitted along with my assignment is just a Lorem Ipsum text, but i have tried everything from a couple of words to the full King James bible with success
@@ -23,7 +22,7 @@ public class Main {
 
         //Dark regex magic to remove all non word characters like , and . etc..
         txt = txt.replaceAll("[^*a-zA-Z ]", "");
-        //Split into words
+        //Split words into individual strings.
         String[]words = txt.split(" ");
 
         //Create a tree and insert all the words (The insert method deals with the sorting)
@@ -31,7 +30,7 @@ public class Main {
         for(String word : words){
             tree.insert(word);
         }
-        System.out.println("hei".compareTo("a"));
+        //Print out the words contained in the tree alphabetically and the number of occurrences
         tree.printAlphabetically();
 
     }

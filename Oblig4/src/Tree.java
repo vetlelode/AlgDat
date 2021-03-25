@@ -22,7 +22,7 @@ public class Tree {
                 current.occurrence++;
                 break;
             }
-            //If the new value is alphabetically before current place the value to the left
+            //If the new value is alphabetically before current.data place the value to the left
             else if(value.compareTo(current.data) < 0) {
                 if(current.left == null){
                     current.left = treeNode;
