@@ -20,16 +20,18 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
         //Dark regex magic to remove all non word characters like , and . etc..
         txt = txt.replaceAll("[^*a-zA-Z ]", "");
         //Split into words
         String[]words = txt.split(" ");
+
         //Create a tree and insert all the words (The insert method deals with the sorting)
         Tree tree = new Tree();
         for(String word : words){
             tree.insert(word);
         }
-
+        System.out.println("hei".compareTo("a"));
         tree.printAlphabetically();
 
     }
