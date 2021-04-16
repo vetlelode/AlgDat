@@ -61,7 +61,7 @@ public class HashLinear {
         int neste = h;
         System.out.println(Arrays.toString(hashTabell));
 
-        while (hashTabell[neste] != null)
+        if (hashTabell[neste] != null)
         {
             // Ny probe
             antProbes++;
@@ -85,7 +85,7 @@ public class HashLinear {
                 for(int i = untilFree; i != 0; i--){
                         hashTabell[neste+i] = hashTabell[neste+i-1];
                 }
-                break;
+
             }
         }
 

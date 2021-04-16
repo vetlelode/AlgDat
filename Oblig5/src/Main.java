@@ -18,12 +18,13 @@ public class Main {
     public static void main(String argv[])
     {
         // Hashlengde leses fra kommandolinjen
-        int hashLengde = 50;
+        int hashLengde = 5000;
 
         // Lager ny hashTabell
-        HashLinear hL = new HashLinear(hashLengde);
+        //HashLinear hL = new HashLinear(hashLengde);
+        RobinHood hL = new RobinHood(hashLengde);
         //Les input fra fil da det er mindre stress enn den innebygde måten
-        File input = new File("input.txt");
+        File input = new File("input2.txt");
         try{
             Scanner scn = new Scanner(input);
             while (scn.hasNext())
@@ -45,7 +46,7 @@ public class Main {
         System.out.printf( "Load factor : %5.3f\n",  hL.loadFactor());
         System.out.println("Probes      : " + hL.antProbes());
         // Et par enkle søk
-        String S = "Volkswagen Karmann Ghia";
+        String S = "grade";
         if (hL.search(S))
             System.out.println("\"" + S + "\"" + " finnes i hashtabellen");
         S = "Il Tempo Gigante";
