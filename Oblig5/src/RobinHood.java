@@ -67,6 +67,7 @@ public class RobinHood {
 
             if (hashTabell[neste] != null)
             {
+                //Endret Kode !
                 // Ny probe
                 antProbes++;
 
@@ -80,6 +81,7 @@ public class RobinHood {
                         untilFree++;
                     }
                 }
+
                 /*
                 Under er måten jeg prøver å implementere Robinhoodsortering,
                 jeg var veldig usikker på hvordan jeg kunne verifisere hva orginale hashverdien til en streng var.
@@ -171,12 +173,14 @@ public class RobinHood {
     //
     public static void main(String argv[])
     {
+        //Endret Kode !
         // Hashlengde leses fra kommandolinjen
         int hashLengde = 5000;
-
+        //Endret Kode !
         // Lager ny hashTabell
         //HashLinear hL = new HashLinear(hashLengde);
         RobinHood hL = new RobinHood(hashLengde);
+        //Endret Kode !
         //Les input fra fil da det er mindre stress enn den innebygde måten
         File input = new File("input2.txt");
         try{
@@ -200,6 +204,7 @@ public class RobinHood {
         System.out.printf( "Load factor : %5.3f\n",  hL.loadFactor());
         System.out.println("Probes      : " + hL.antProbes());
         // Et par enkle søk
+        //Endret Kode !
         String S = "grade";
         if (hL.search(S))
             System.out.println("\"" + S + "\"" + " finnes i hashtabellen");

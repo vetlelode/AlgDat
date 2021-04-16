@@ -94,7 +94,7 @@ public class HashChained
         // Setter inn ny node først i listen
         hashTabell[h] = new HashNode(S, hashTabell[h]);
     }
-
+    //Endret Kode !
     void delete(String S){
         // Beregner hashverdien
         int h = hash(S);
@@ -159,12 +159,12 @@ public class HashChained
     //
     public static void main(String argv[])
     {
-        // Hashlengde leses fra kommandolinjen
+        //Endret Kode !
         int hashLengde = 2000;
 
         // Lager ny hashTabell
         HashChained hC = new HashChained(hashLengde);
-
+        //Endret Kode !
         //Les input fra fil da det er mindre stress enn den innebygde måten
         File input = new File("input2.txt");
         try{
@@ -185,14 +185,19 @@ public class HashChained
         System.out.printf( "Load factor : %5.3f\n",  hC.loadFactor());
         System.out.println("Kollisjoner : " + hC.antKollisjoner());
 
+        //Endret Kode !
+
         // Et par enkle søk
         String S = "test";
         if (hC.search(S))
             System.out.println("\"" + S + "\"" + " finnes i hashtabellen");
+
         //Sjekk om elementet blir slettet
         hC.delete("test");
         if (hC.search(S))
             System.out.println("\"" + S + "\"" + " finnes i hashtabellen");
+
+
 
     }
 }
